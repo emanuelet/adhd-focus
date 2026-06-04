@@ -5,3 +5,5 @@ allowBuilds:
 onlyBuiltDependencies:
   - esbuild
   - lightningcss
+
+minimumReleaseAge: 2880
