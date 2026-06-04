@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { getAppState } from '~/server/state'
 import { getTasks, getProjects } from '~/server/todoist'
 import { useAppStore } from '~/store/useAppStore'
+import App from '~/components/App'
 
 export const Route = createFileRoute('/')({
   loader: async () => {
@@ -35,14 +36,6 @@ function IndexPage() {
   }, [router])
 
   const projectMap = Object.fromEntries(projects.map((p) => [p.id, p]))
-  const projectCount = Object.keys(projectMap).length
 
-  return (
-    <div className="p-8">
-      <h1 className="text-4xl font-bold">⬡ ADHD Focus</h1>
-      <p className="mt-4 text-lg">
-        {tasks.length} tasks · {projectCount} projects · {state.todayIds.length} today
-      </p>
-    </div>
-  )
+  return <App tasks={tasks} projectMap={projectMap} />
 }
