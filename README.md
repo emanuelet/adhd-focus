@@ -1,6 +1,6 @@
 # ADHD Focus
 
-> Self-hosted ADHD productivity app wrapping Todoist, synced across laptop + phone via PostgreSQL. Built with TanStack Start, deployed via Coolify.
+> Self-hosted ADHD productivity app wrapping Todoist, synced across laptop + phone via PostgreSQL. Built with TanStack Start.
 
 ## Features
 
@@ -24,7 +24,7 @@
 | DB client | `postgres` |
 | Auth | Single-user JWT (`jose`) |
 | PWA | `workbox-build` post-build |
-| Deploy | Docker → Coolify |
+| Deploy | Docker |
 
 ## Getting Started
 

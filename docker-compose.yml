@@ -1,0 +1,17 @@
+services:
+  adhd-focus:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - TODOIST_API_TOKEN=${TODOIST_API_TOKEN}
+      - APP_PASSWORD=${APP_PASSWORD}
+      - APP_SECRET=${APP_SECRET}
+      - DATABASE_URL=${DATABASE_URL}
+      - VITE_APP_URL=${VITE_APP_URL}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
