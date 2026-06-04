@@ -4,9 +4,12 @@ import { useAppStore } from '~/store/useAppStore'
 import { useMutations } from '~/hooks/useMutations'
 import { usePomodoro } from '~/hooks/usePomodoro'
 import { Nav } from '~/components/layout/Nav'
+import { FocusBanner } from '~/components/layout/FocusBanner'
 import { TodayView } from '~/components/today/TodayView'
 import { InboxView } from '~/components/inbox/InboxView'
 import { DoneView } from '~/components/done/DoneView'
+import { CaptureDrawer } from '~/components/capture/CaptureDrawer'
+import { CaptureFAB } from '~/components/capture/CaptureFAB'
 
 interface Props {
   tasks: TaskType[]
@@ -17,10 +20,15 @@ type Tab = 'today' | 'inbox' | 'done'
 
 export default function App({ tasks, projectMap }: Props) {
   const [tab, setTab] = useState<Tab>('today')
+  const [captureOpen, setCaptureOpen] = useState(false)
   const { todayIds, doneIds, energyMap } = useAppStore()
   const { promote, demote, markDone, tagEnergy } = useMutations()
   const pomodoro = usePomodoro()
   const effectiveTodayIds = todayIds.length > 0 ? todayIds : []
+
+  const focusedTask = pomodoro.focusId
+    ? tasks.find((t) => t.id === pomodoro.focusId) ?? null
+    : null
 
   const handleEnergyChange = (taskId: string, level: EnergyLevel) => {
     tagEnergy(taskId, level)
@@ -31,10 +39,18 @@ export default function App({ tasks, projectMap }: Props) {
   }
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6">
+    <div className="max-w-lg mx-auto px-4 py-6 pb-24">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-semibold text-[var(--text)]">⬡ ADHD Focus</h1>
       </div>
+
+      <FocusBanner
+        task={focusedTask}
+        formatted={pomodoro.formatted}
+        progress={pomodoro.progress}
+        phase={pomodoro.phase}
+        onStop={pomodoro.stop}
+      />
 
       <Nav activeTab={tab} onTabChange={setTab} />
 
@@ -74,6 +90,9 @@ export default function App({ tasks, projectMap }: Props) {
           allTasks={tasks}
         />
       )}
+
+      <CaptureFAB onClick={() => setCaptureOpen(true)} />
+      <CaptureDrawer open={captureOpen} onClose={() => setCaptureOpen(false)} />
     </div>
   )
 }
