@@ -60,3 +60,17 @@ export const updateDoneIds = createServerFn({ method: 'POST' })
       SET done_ids = EXCLUDED.done_ids, updated_at = NOW()
     `
   })
+
+export const recordSprintCompletion = createServerFn({ method: 'POST' })
+  .inputValidator((d: unknown) => d as { taskId: string; minutes: number })
+  .handler(async ({ data }) => {
+    await requireAuth()
+    await db`
+      INSERT INTO daily_reviews (date, total_sprints, total_focus_mins)
+      VALUES (${today()}, 1, ${data.minutes})
+      ON CONFLICT (date) DO UPDATE
+      SET total_sprints = daily_reviews.total_sprints + 1,
+          total_focus_mins = daily_reviews.total_focus_mins + ${data.minutes},
+          updated_at = NOW()
+    `
+  })
