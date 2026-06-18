@@ -1,4 +1,5 @@
 import postgres from 'postgres'
+import 'dotenv/config'
 
 declare global {
   var _db: ReturnType<typeof postgres> | undefined
