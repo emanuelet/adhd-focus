@@ -3,7 +3,7 @@
   "private": true,
   "license": "CC-BY-NC-SA-4.0",
   "type": "module",
-  "packageManager": "pnpm@11.5.1",
+  "packageManager": "pnpm@11.6.0",
   "imports": {
     "#/*": "./src/*"
   },
@@ -12,6 +12,7 @@
     "build": "vite build && tsx scripts/generate-sw.ts",
     "start": "node .output/server/index.mjs",
     "preview": "vite preview",
+    "migrate": "tsx src/lib/db/run-migrations.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "format": "biome format",
