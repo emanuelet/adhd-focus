@@ -1,5 +1,7 @@
-import { runMigrations as migrate } from './run-migrations'
+import { runMigrations } from "./run-migrations";
 
-;(async () => {
-  await migrate()
-})()
+(async () => {
+	await runMigrations();
+})();
+
+export const migrate = runMigrations;

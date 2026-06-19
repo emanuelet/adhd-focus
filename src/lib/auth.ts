@@ -1,20 +1,20 @@
-import { SignJWT, jwtVerify } from 'jose'
+import { jwtVerify, SignJWT } from "jose";
 
-const secret = () => new TextEncoder().encode(process.env.APP_SECRET!)
+const secret = () => new TextEncoder().encode(process.env.APP_SECRET!);
 
 export async function signSession(): Promise<string> {
-  return new SignJWT({ sub: 'user' })
-    .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt()
-    .setExpirationTime('30d')
-    .sign(secret())
+	return new SignJWT({ sub: "user" })
+		.setProtectedHeader({ alg: "HS256" })
+		.setIssuedAt()
+		.setExpirationTime("30d")
+		.sign(secret());
 }
 
 export async function verifySession(token: string): Promise<boolean> {
-  try {
-    await jwtVerify(token, secret())
-    return true
-  } catch {
-    return false
-  }
+	try {
+		await jwtVerify(token, secret());
+		return true;
+	} catch {
+		return false;
+	}
 }
