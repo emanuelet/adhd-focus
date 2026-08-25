@@ -32,8 +32,8 @@ export async function runMigrations() {
 		"001_initial.sql",
 		"002_sync.sql",
 		"003_organizer.sql",
+		"004_review.sql",
 	];
-
 	let count = 0;
 	for (const file of migrations) {
 		const name = file.replace(".sql", "");
