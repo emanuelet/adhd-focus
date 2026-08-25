@@ -1,3 +1,5 @@
+import { createKarakeepClient as createSdkClient } from "@karakeep/sdk";
+
 const DEFAULT_TIMEOUT_MS = 10_000;
 
 export interface KarakeepClientOptions {
@@ -21,28 +23,25 @@ export function createKarakeepClient(options: KarakeepClientOptions = {}) {
 	return {
 		async createBookmark(input: { url: string; title: string; tags: string[] }): Promise<{ id: string }> {
 			const { apiKey, baseUrl } = config();
-			const controller = new AbortController();
-			const timeout = setTimeout(() => controller.abort(), timeoutMs);
-			try {
-				const response = await fetchImpl(`${baseUrl}/api/v1/bookmarks`, {
-					method: "POST",
-					headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-					body: JSON.stringify(input),
-					signal: controller.signal,
-				});
-				if (!response.ok) throw new Error(`Karakeep request failed: ${response.status}`);
-				const body = (await response.json()) as { id?: string; bookmark?: { id?: string } };
-				const id = body.id ?? body.bookmark?.id;
-				if (!id) throw new Error("Karakeep response did not contain a bookmark id");
-				return { id };
-			} catch (error) {
-				if (error instanceof Error && error.name === "AbortError") {
-					throw new Error(`Karakeep request timed out after ${timeoutMs}ms`);
-				}
-				throw error;
-			} finally {
-				clearTimeout(timeout);
-			}
+			const sdk = createSdkClient({
+				baseUrl: `${baseUrl}/api/v1`,
+				headers: { Authorization: `Bearer ${apiKey}` },
+				fetch: (request: Request) => {
+					const controller = new AbortController();
+					const timeout = setTimeout(() => controller.abort(), timeoutMs);
+					return fetchImpl(new Request(request, { signal: controller.signal })).finally(() => clearTimeout(timeout));
+				},
+			});
+			const created = await sdk.POST("/bookmarks", {
+				body: { type: "link", url: input.url, title: input.title },
+			});
+			if (created.error || !created.data) throw new Error("Karakeep bookmark creation failed");
+			const tagged = await sdk.POST("/bookmarks/{bookmarkId}/tags", {
+				params: { path: { bookmarkId: created.data.id } },
+				body: { tags: input.tags.map((tagName) => ({ tagName, attachedBy: "human" as const })) },
+			});
+			if (tagged.error) throw new Error("Karakeep bookmark tagging failed");
+			return { id: created.data.id };
 		},
 	};
 }

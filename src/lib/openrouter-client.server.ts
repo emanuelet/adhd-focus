@@ -1,4 +1,5 @@
-const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+import { HTTPClient, OpenRouter } from "@openrouter/sdk";
+
 const DEFAULT_TIMEOUT_MS = 15_000;
 
 export interface OpenRouterMessage {
@@ -20,41 +21,38 @@ function apiKey() {
 export function createOpenRouterClient(options: OpenRouterClientOptions = {}) {
 	const fetchImpl = options.fetchImpl ?? fetch;
 	const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+	const client = new OpenRouter({
+		apiKey: async () => apiKey(),
+		httpClient: new HTTPClient({ fetcher: fetchImpl }),
+	});
 
 	return {
 		async chat(messages: OpenRouterMessage[]): Promise<string> {
-			const controller = new AbortController();
-			const timeout = setTimeout(() => controller.abort(), timeoutMs);
 			try {
-				const response = await fetchImpl(OPENROUTER_URL, {
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${apiKey()}`,
-						"Content-Type": "application/json",
-						"HTTP-Referer": process.env.OPENROUTER_SITE_URL ?? "http://localhost",
+				const response = await client.chat.send(
+					{
+						httpReferer: process.env.OPENROUTER_SITE_URL ?? "http://localhost",
+						chatRequest: {
+							model: process.env.OPENROUTER_MODEL ?? "openai/gpt-5.6-luna",
+							messages,
+							stream: false,
+							temperature: 0,
+							responseFormat: { type: "json_object" },
+						},
 					},
-					body: JSON.stringify({
-						model: process.env.OPENROUTER_MODEL ?? "openai/gpt-4o-mini",
-						messages,
-						temperature: 0,
-						response_format: { type: "json_object" },
-					}),
-					signal: controller.signal,
-				});
-				if (!response.ok) throw new Error(`OpenRouter request failed: ${response.status}`);
-				const body = (await response.json()) as {
-					choices?: Array<{ message?: { content?: string | null } }>;
-				};
-				const content = body.choices?.[0]?.message?.content;
-				if (!content) throw new Error("OpenRouter response did not contain content");
+					{ timeoutMs },
+				);
+				if (!("choices" in response)) throw new Error("OpenRouter response was streamed unexpectedly");
+				const content = response.choices[0]?.message.content;
+				if (typeof content !== "string" || content.length === 0) {
+					throw new Error("OpenRouter response did not contain content");
+				}
 				return content;
 			} catch (error) {
-				if (error instanceof Error && error.name === "AbortError") {
+				if (error instanceof Error && (error.name === "AbortError" || /timeout|aborted/i.test(error.message))) {
 					throw new Error(`OpenRouter request timed out after ${timeoutMs}ms`);
 				}
 				throw error;
-			} finally {
-				clearTimeout(timeout);
 			}
 		},
 	};

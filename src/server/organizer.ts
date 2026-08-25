@@ -99,9 +99,9 @@ export function buildTodoistRequest(payload: TodoistProposal) {
 	return {
 		content: payload.content,
 		description: payload.description,
-		...(payload.projectId ? { project_id: payload.projectId } : {}),
+		...(payload.projectId ? { projectId: payload.projectId } : {}),
 		...(payload.labels.length ? { labels: payload.labels } : {}),
-		...(payload.dueString ? { due_string: payload.dueString } : {}),
+		...(payload.dueString ? { dueString: payload.dueString } : {}),
 	};
 }
 
@@ -189,12 +189,10 @@ export const applyOrganizerProposal = createServerFn({ method: "POST" })
 		let externalId: string;
 		if (payload.type === "todoist") {
 			const body = buildTodoistRequest(payload);
-			const response = payload.action === "update" && payload.taskId
+			const result = payload.action === "update" && payload.taskId
 				? await organizerTodoistClient.updateTask(payload.taskId, body)
 				: await organizerTodoistClient.createTask(body);
-			if (!response.ok) throw new Error(`Todoist proposal apply failed: ${response.status}`);
-			const result = (await response.json()) as { id?: string };
-			externalId = result.id ?? payload.taskId ?? "unknown";
+			externalId = result.id;
 		} else {
 			const result = await karakeepClient.createBookmark(buildApprovedKarakeepBookmark(payload));
 			externalId = result.id;

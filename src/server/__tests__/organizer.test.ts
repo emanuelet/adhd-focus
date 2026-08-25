@@ -60,9 +60,9 @@ describe("organizer proposal boundaries", () => {
 		expect(body).toEqual({
 			content: "Updated task",
 			description: "Details",
-			project_id: "project-1",
+			projectId: "project-1",
 			labels: ["focus"],
-			due_string: "tomorrow",
+			dueString: "tomorrow",
 		});
 		expect(body).not.toHaveProperty("taskId");
 	});
