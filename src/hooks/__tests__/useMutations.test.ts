@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useMutations } from "../useMutations";
 import { useAppStore } from "~/store/useAppStore";
+import { useMutations } from "../useMutations";
 
 const mocks = vi.hoisted(() => ({
 	updateTodayIds: vi.fn(),
@@ -48,9 +48,9 @@ describe("useMutations", () => {
 		mocks.updateTodayIds.mockRejectedValueOnce(new Error("offline"));
 		const { result } = renderHook(() => useMutations());
 
-		await expect(
-			act(() => result.current.promote("new-task")),
-		).rejects.toThrow("offline");
+		await expect(act(() => result.current.promote("new-task"))).rejects.toThrow(
+			"offline",
+		);
 
 		expect(useAppStore.getState().todayIds).toEqual(["existing"]);
 		expect(useAppStore.getState().syncState.todayIds).toEqual({
@@ -67,7 +67,9 @@ describe("useMutations", () => {
 		const { result } = renderHook(() => useMutations());
 
 		const mutation = act(() => result.current.promote("task-1"));
-		expect(useAppStore.getState().syncState.todayIds).toEqual({ status: "pending" });
+		expect(useAppStore.getState().syncState.todayIds).toEqual({
+			status: "pending",
+		});
 		resolveRequest();
 		await mutation;
 		expect(useAppStore.getState().syncState).toEqual({});

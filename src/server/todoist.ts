@@ -26,7 +26,9 @@ export const closeTask = createServerFn({ method: "POST" })
 	});
 
 export const updateTask = createServerFn({ method: "POST" })
-	.validator((d: unknown) => d as { taskId: string; updates: TodoistTaskUpdate })
+	.validator(
+		(d: unknown) => d as { taskId: string; updates: TodoistTaskUpdate },
+	)
 	.handler(async ({ data }) => {
 		await requireAuth();
 		const res = await todoistClient.updateTask(data.taskId, data.updates);

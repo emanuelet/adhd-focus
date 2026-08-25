@@ -24,16 +24,22 @@ describe("organizer proposal boundaries", () => {
 			}),
 		);
 		expect(parsed.payload.type).toBe("todoist");
-		expect(() => validateOrganizerPayload({ type: "todoist", action: "update", content: "x" })).toThrow(
-			"require a task id",
-		);
+		expect(() =>
+			validateOrganizerPayload({
+				type: "todoist",
+				action: "update",
+				content: "x",
+			}),
+		).toThrow("require a task id");
 	});
 
 	it("rejects malformed or non-JSON AI output", () => {
 		expect(() => parseOrganizerResponse("not json")).toThrow("not valid JSON");
-		expect(() => parseOrganizerResponse(JSON.stringify({ proposal: { type: "other" }, rationale: "x" }))).toThrow(
-			"Unsupported organizer proposal type",
-		);
+		expect(() =>
+			parseOrganizerResponse(
+				JSON.stringify({ proposal: { type: "other" }, rationale: "x" }),
+			),
+		).toThrow("Unsupported organizer proposal type");
 	});
 
 	it("adds must-read only at explicit Karakeep approval construction", () => {
@@ -43,7 +49,10 @@ describe("organizer proposal boundaries", () => {
 			title: "Read this",
 			tags: ["research", "must-read"],
 		};
-		expect(buildApprovedKarakeepBookmark(payload).tags).toEqual(["research", "must-read"]);
+		expect(buildApprovedKarakeepBookmark(payload).tags).toEqual([
+			"research",
+			"must-read",
+		]);
 	});
 
 	it("builds Todoist create/update body without leaking proposal control fields", () => {

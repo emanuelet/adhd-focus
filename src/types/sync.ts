@@ -2,9 +2,17 @@ export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
 export type JsonObject = { [key: string]: JsonValue };
 
-export type SyncEntity = "focus_slots" | "task_meta" | "daily_state" | "capture";
+export type SyncEntity =
+	| "focus_slots"
+	| "task_meta"
+	| "daily_state"
+	| "capture";
 export type SyncOperationAction = "upsert" | "delete";
-export type SyncOperationStatus = "pending" | "applied" | "conflict" | "rejected";
+export type SyncOperationStatus =
+	| "pending"
+	| "applied"
+	| "conflict"
+	| "rejected";
 
 export interface SyncOperationInput {
 	id: string;
@@ -40,8 +48,8 @@ export interface SyncOperationResult {
 	status: SyncOperationStatus;
 	revision?: string;
 	error?: {
-	code: "invalid" | "conflict" | "duplicate";
-	message: string;
+		code: "invalid" | "conflict" | "duplicate";
+		message: string;
 	};
 }
 

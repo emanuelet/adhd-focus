@@ -8,9 +8,14 @@ describe("todoistClient.updateTask", () => {
 		process.env.TODOIST_API_TOKEN = "test-token";
 		const fetchMock = vi
 			.spyOn(globalThis, "fetch")
-			.mockResolvedValue(new Response(JSON.stringify({ id: "task-1" }), { status: 200 }));
+			.mockResolvedValue(
+				new Response(JSON.stringify({ id: "task-1" }), { status: 200 }),
+			);
 
-		await todoistClient.updateTask("task-1", { content: "Updated", priority: 2 });
+		await todoistClient.updateTask("task-1", {
+			content: "Updated",
+			priority: 2,
+		});
 
 		expect(fetchMock).toHaveBeenCalledWith(
 			"https://api.todoist.com/api/v1/tasks/task-1",

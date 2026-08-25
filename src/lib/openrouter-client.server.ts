@@ -41,14 +41,19 @@ export function createOpenRouterClient(options: OpenRouterClientOptions = {}) {
 					},
 					{ timeoutMs },
 				);
-				if (!("choices" in response)) throw new Error("OpenRouter response was streamed unexpectedly");
+				if (!("choices" in response))
+					throw new Error("OpenRouter response was streamed unexpectedly");
 				const content = response.choices[0]?.message.content;
 				if (typeof content !== "string" || content.length === 0) {
 					throw new Error("OpenRouter response did not contain content");
 				}
 				return content;
 			} catch (error) {
-				if (error instanceof Error && (error.name === "AbortError" || /timeout|aborted/i.test(error.message))) {
+				if (
+					error instanceof Error &&
+					(error.name === "AbortError" ||
+						/timeout|aborted/i.test(error.message))
+				) {
 					throw new Error(`OpenRouter request timed out after ${timeoutMs}ms`);
 				}
 				throw error;

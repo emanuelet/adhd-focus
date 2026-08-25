@@ -83,6 +83,5 @@ export const useAppStore = create<Store>()((set) => ({
 				? { syncState: { ...s.syncState, [key]: { status: "failed", error } } }
 				: s,
 		),
-		isCurrentSync: (key, token) =>
-			syncTokens.get(key) === token,
+	isCurrentSync: (key, token) => syncTokens.get(key) === token,
 }));

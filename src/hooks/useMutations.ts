@@ -5,8 +5,10 @@ import {
 	deleteCapture as deleteCaptureFn,
 	markCaptureSent,
 } from "~/server/captures";
-import { setEnergy as setEnergyFn } from "~/server/energy";
-import { deleteEnergy as deleteEnergyFn } from "~/server/energy";
+import {
+	deleteEnergy as deleteEnergyFn,
+	setEnergy as setEnergyFn,
+} from "~/server/energy";
 import { updateDoneIds, updateTodayIds } from "~/server/state";
 import { closeTask, createTodoistTask } from "~/server/todoist";
 import { useAppStore } from "~/store/useAppStore";
@@ -30,7 +32,11 @@ export function useMutations() {
 			} catch (error) {
 				if (store.isCurrentSync(key, token)) {
 					rollback();
-					store.failSync(key, token, error instanceof Error ? error.message : String(error));
+					store.failSync(
+						key,
+						token,
+						error instanceof Error ? error.message : String(error),
+					);
 				}
 				throw error;
 			}
@@ -98,7 +104,8 @@ export function useMutations() {
 			const previous = useAppStore.getState().energyMap[taskId];
 			await runOptimistic(
 				`energy:${taskId}`,
-				() => (level ? store.setEnergy(taskId, level) : store.clearEnergy(taskId)),
+				() =>
+					level ? store.setEnergy(taskId, level) : store.clearEnergy(taskId),
 				() => {
 					if (previous) store.setEnergy(taskId, previous);
 					else store.clearEnergy(taskId);
@@ -126,7 +133,9 @@ export function useMutations() {
 				() => store.addCapture(cap),
 				() => store.removeCapture(cap.id),
 				async () => {
-					const result = await createCapture({ data: { ...cap, sendToTodoist } });
+					const result = await createCapture({
+						data: { ...cap, sendToTodoist },
+					});
 					if (result.todoistTaskId) {
 						store.updateCapture(cap.id, {
 							sentToTodoist: true,
@@ -151,7 +160,9 @@ export function useMutations() {
 				() => store.updateCapture(captureId, { sentToTodoist: true }),
 				() => store.updateCapture(captureId, cap),
 				async () => {
-					const { id: todoistTaskId } = await createTodoistTask({ data: { content } });
+					const { id: todoistTaskId } = await createTodoistTask({
+						data: { content },
+					});
 					store.updateCapture(captureId, { todoistTaskId });
 					await markCaptureSent({ data: { id: captureId, todoistTaskId } });
 				},

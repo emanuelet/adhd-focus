@@ -15,21 +15,30 @@ describe("organizer server clients", () => {
 		const fetchImpl = vi.fn((_url: RequestInfo | URL, init?: RequestInit) => {
 			return new Promise<Response>((_, reject) => {
 				const signal = _url instanceof Request ? _url.signal : init?.signal;
-				signal?.addEventListener("abort", () => reject(Object.assign(new Error("aborted"), { name: "AbortError" })));
+				signal?.addEventListener("abort", () =>
+					reject(Object.assign(new Error("aborted"), { name: "AbortError" })),
+				);
 			});
 		});
-		await expect(createOpenRouterClient({ fetchImpl: fetchImpl as unknown as typeof fetch, timeoutMs: 1 }).chat([])).rejects.toThrow(
-			"timed out after 1ms",
-		);
+		await expect(
+			createOpenRouterClient({
+				fetchImpl: fetchImpl as unknown as typeof fetch,
+				timeoutMs: 1,
+			}).chat([]),
+		).rejects.toThrow("timed out after 1ms");
 		delete process.env.OPENROUTER_API_KEY;
 	});
 
 	it("surfaces Karakeep HTTP errors", async () => {
 		process.env.KARAKEEP_API_KEY = "test-key";
 		const fetchImpl = vi.fn(async () => new Response(null, { status: 503 }));
-		await expect(createKarakeepClient({ fetchImpl }).createBookmark({ url: "https://x.test", title: "x", tags: [] })).rejects.toThrow(
-			"Karakeep bookmark creation failed",
-		);
+		await expect(
+			createKarakeepClient({ fetchImpl }).createBookmark({
+				url: "https://x.test",
+				title: "x",
+				tags: [],
+			}),
+		).rejects.toThrow("Karakeep bookmark creation failed");
 		delete process.env.KARAKEEP_API_KEY;
 	});
 });

@@ -1,4 +1,8 @@
-import { TodoistApi, type AddTaskArgs, type UpdateTaskArgs } from "@doist/todoist-sdk";
+import {
+	type AddTaskArgs,
+	TodoistApi,
+	type UpdateTaskArgs,
+} from "@doist/todoist-sdk";
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 
@@ -7,7 +11,9 @@ export interface OrganizerTodoistClientOptions {
 	timeoutMs?: number;
 }
 
-export function createOrganizerTodoistClient(options: OrganizerTodoistClientOptions = {}) {
+export function createOrganizerTodoistClient(
+	options: OrganizerTodoistClientOptions = {},
+) {
 	const fetchImpl = options.fetchImpl ?? fetch;
 	const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 	let api: TodoistApi | undefined;
@@ -20,7 +26,10 @@ export function createOrganizerTodoistClient(options: OrganizerTodoistClientOpti
 				const controller = new AbortController();
 				const timeout = setTimeout(() => controller.abort(), timeoutMs);
 				try {
-					const response = await fetchImpl(url, { ...options, signal: controller.signal });
+					const response = await fetchImpl(url, {
+						...options,
+						signal: controller.signal,
+					});
 					return {
 						ok: response.ok,
 						status: response.status,
@@ -43,7 +52,8 @@ export function createOrganizerTodoistClient(options: OrganizerTodoistClientOpti
 	};
 	return {
 		createTask: (input: AddTaskArgs) => getApi().addTask(input),
-		updateTask: (id: string, input: UpdateTaskArgs) => getApi().updateTask(id, input),
+		updateTask: (id: string, input: UpdateTaskArgs) =>
+			getApi().updateTask(id, input),
 	};
 }
 

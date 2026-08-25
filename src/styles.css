@@ -1,34 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
-@import 'tailwindcss';
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap");
+@import "tailwindcss";
 
 :root {
-  --bg: #0c0e18;
-  --surface: #12141e;
-  --surface-alt: #0e1019;
-  --border: #1e2133;
-  --border-alt: #272a3d;
-  --text: #ddd8f0;
-  --muted: #6e6a88;
-  --faint: #3e3c55;
-  --accent: #f5a623;
-  --accent-dim: rgba(245, 166, 35, 0.13);
-  --green: #4ade80;
-  --green-dim: rgba(74, 222, 128, 0.13);
-  --red: #f87171;
-  --blue: #14aaf5;
-  --font-sans: 'DM Sans', sans-serif;
-  --font-mono: 'DM Mono', monospace;
+	--bg: #0c0e18;
+	--surface: #12141e;
+	--surface-alt: #0e1019;
+	--border: #1e2133;
+	--border-alt: #272a3d;
+	--text: #ddd8f0;
+	--muted: #6e6a88;
+	--faint: #3e3c55;
+	--accent: #f5a623;
+	--accent-dim: rgba(245, 166, 35, 0.13);
+	--green: #4ade80;
+	--green-dim: rgba(74, 222, 128, 0.13);
+	--red: #f87171;
+	--blue: #14aaf5;
+	--font-sans: "DM Sans", sans-serif;
+	--font-mono: "DM Mono", monospace;
 }
 
-*, *::before, *::after { box-sizing: border-box; }
-
-html, body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-  min-height: 100%;
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
 }
 
-#app { min-height: 100%; }
+html,
+body {
+	margin: 0;
+	padding: 0;
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font-sans);
+	min-height: 100%;
+}
+
+#app {
+	min-height: 100%;
+}
