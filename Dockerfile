@@ -11,6 +11,7 @@ ENV NODE_ENV=production
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 RUN corepack enable && corepack prepare pnpm@11.22.0 --activate && pnpm install --prod --frozen-lockfile
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server.mjs ./server.mjs
 EXPOSE 3000
 ENV PORT=3000
-CMD ["node", "dist/server/server.js"]
+CMD ["node", "server.mjs"]

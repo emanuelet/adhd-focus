@@ -14,7 +14,7 @@
 		"tauri:dev": "tauri dev",
 		"tauri:build:linux": "tauri build --bundles deb,appimage",
 		"capacitor": "cap",
-		"start": "node .output/server/index.mjs",
+		"start": "node server.mjs",
 		"preview": "vite preview",
 		"migrate": "tsx src/lib/db/migrate.ts",
 		"test": "vitest run",
@@ -48,6 +48,7 @@
 		"postgres": "^3.4.9",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8",
+		"srvx": "^0.11.16",
 		"tailwindcss": "^4.3.3",
 		"zustand": "^5.0.15"
 	},

@@ -24,11 +24,18 @@ import type {
 interface Props {
 	tasks: TaskType[];
 	projectMap: Record<string, Project>;
+	todoistError?: string;
+	onRetryTodoist: () => void;
 }
 
 type Tab = "today" | "inbox" | "done";
 
-export default function App({ tasks, projectMap }: Props) {
+export default function App({
+	tasks,
+	projectMap,
+	todoistError,
+	onRetryTodoist,
+}: Props) {
 	useOutboxSync();
 	const [tab, setTab] = useState<Tab>("today");
 	const [captureOpen, setCaptureOpen] = useState(false);
@@ -110,6 +117,19 @@ export default function App({ tasks, projectMap }: Props) {
 					⬡ ADHD Focus
 				</h1>
 			</div>
+
+			{todoistError && (
+				<div className="flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 mb-4 text-xs text-[var(--muted)]">
+					<span>Todoist is unavailable. Your saved app data is still available.</span>
+					<button
+						type="button"
+						onClick={onRetryTodoist}
+						className="shrink-0 border-0 bg-transparent p-0 text-[var(--accent)] cursor-pointer"
+					>
+						Retry sync
+					</button>
+				</div>
+			)}
 
 			<FocusBanner
 				task={focusedTask}

@@ -18,7 +18,7 @@ async function getAll(url: string, init: RequestInit): Promise<unknown[]> {
 	do {
 		const query = cursor ? `?cursor=${encodeURIComponent(cursor)}` : "";
 		const res = await fetch(`${url}${query}`, init);
-		if (!res.ok) throw res;
+		if (!res.ok) throw new Error(`Todoist request failed: ${res.status}`);
 		const json = (await res.json()) as {
 			results: unknown[];
 			next_cursor?: string | null;

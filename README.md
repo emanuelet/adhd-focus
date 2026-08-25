@@ -88,15 +88,13 @@ TEST_DATABASE_URL=postgres://... pnpm test
 
 ### Cloudflare Tunnel
 
-Set `CLOUDFLARED_TUNNEL_TOKEN` in the Compose environment to expose the app
-through an existing Cloudflare Tunnel. The `cloudflared` sidecar waits for the
-app health check and does not contain tunnel credentials in the repository.
+The system cloudflared service exposes the app. Configure its ADHD Focus public
+hostname origin as `http://127.0.0.1:3012`.
 
 ## Deployment
 
 ```bash
-pnpm build
-node dist/server/index.mjs
+docker compose up -d --build
 ```
 
 ## Project Structure
