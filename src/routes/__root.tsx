@@ -42,15 +42,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 					]}
 				/>
 				<Scripts />
-				<ServiceWorkerRegister />
 			</body>
 		</html>
 	);
-}
-
-function ServiceWorkerRegister() {
-	const code = `if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js').catch(()=>{})})}`;
-	return <script dangerouslySetInnerHTML={{ __html: code }} />;
 }
 
 function NotFound() {

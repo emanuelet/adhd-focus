@@ -1,4 +1,5 @@
 # ADHD Focus — Implementation Plan v3
+> **Historical:** Workbox and its service-worker build path were removed on 2026-08-24. Use `.hermes/plans/2026-08-24-adhd-focus-refactor.md` for active work.
 > TanStack Start · PostgreSQL · workbox PWA · Homelab Coolify deploy
 > Read fully before writing any code.
 

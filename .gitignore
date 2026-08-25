@@ -12,3 +12,4 @@ dist-ssr
 __unconfig*
 .cta.json
 todos.json
+.worktrees/
