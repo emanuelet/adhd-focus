@@ -28,8 +28,12 @@ export async function runMigrations() {
 	const appliedSet = new Set(applied.map((r: any) => r.name));
 	console.log(`○ ${appliedSet.size} migration(s) already applied`);
 
-	const migrations = ["001_initial.sql", "002_sync.sql", "003_review.sql"];
-
+	const migrations = [
+		"001_initial.sql",
+		"002_sync.sql",
+		"003_organizer.sql",
+		"004_review.sql",
+	];
 	let count = 0;
 	for (const file of migrations) {
 		const name = file.replace(".sql", "");

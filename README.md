@@ -10,6 +10,7 @@
 - **Pre-flight ritual** — Checklist prompt before each sprint (phone away, water, etc.)
 - **Energy tagging** — 🌱⚡🔥 per task, persisted to DB
 - **Quick capture** — Floating drawer, local + send to Todoist inbox
+- **Explicit organizer** — Generate strict AI proposals for Todoist or Karakeep, then approve or reject them manually
 - **Done log** — Session completion tracking with sprint stats
 
 ## Tech Stack
@@ -23,6 +24,7 @@
 | Database | PostgreSQL |
 | DB client | `postgres` |
 | Auth | Single-user JWT (`jose`) |
+| Organizer SDKs | `@openrouter/sdk`, `@doist/todoist-sdk`, `@karakeep/sdk` |
 | PWA | `workbox-build` post-build |
 | Deploy | Docker |
 
@@ -32,6 +34,22 @@
 pnpm install
 pnpm dev
 ```
+
+### Organizer configuration
+
+Set these server-side environment variables before using organizer proposals:
+
+```bash
+DATABASE_URL=postgres://...
+APP_SECRET=...
+TODOIST_API_TOKEN=...
+OPENROUTER_API_KEY=...
+KARAKEEP_API_KEY=...
+KARAKEEP_BASE_URL=http://localhost:3000 # optional
+OPENROUTER_MODEL=openai/gpt-5.6-luna # optional override
+```
+
+The default OpenRouter model is `openai/gpt-5.6-luna`. Organizer generation only stores a runtime-validated pending proposal. It never applies AI output automatically. Approval explicitly creates or updates a Todoist task, or creates a Karakeep bookmark tagged `must-read`.
 
 ## Scripts
 
