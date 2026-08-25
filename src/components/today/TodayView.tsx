@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { ClockOffModal } from "~/components/review/ClockOffModal";
+import { orderTasksForToday } from "~/lib/task-ordering";
+import { saveDailyReview } from "~/server/review";
 import type { EnergyLevel, Task as TaskType } from "~/types/todoist";
 import { TaskSlot } from "./TaskSlot";
 
@@ -35,9 +39,11 @@ export function TodayView({
 	onStartFocus,
 	onStopFocus,
 }: Props) {
-	const todayTasks = todayIds
-		.map((id) => tasks.find((t) => t.id === id))
-		.filter(Boolean) as TaskType[];
+	const [showClockOff, setShowClockOff] = useState(false);
+	const todayTaskIds = new Set(todayIds.slice(0, 3));
+	const todayTasks = orderTasksForToday(tasks, todayIds).filter((task) =>
+		todayTaskIds.has(task.id),
+	) as TaskType[];
 	const filled = todayTasks.length;
 
 	const headerText =
@@ -76,6 +82,24 @@ export function TodayView({
 					/>
 				);
 			})}
+
+			<button
+				type="button"
+				onClick={() => setShowClockOff(true)}
+				className="w-full mt-3 rounded-lg border border-[var(--border)] px-4 py-3 text-sm font-medium text-[var(--text)] hover:border-[var(--accent)] cursor-pointer bg-transparent"
+			>
+				Clock Off
+			</button>
+
+			{showClockOff && (
+				<ClockOffModal
+					onClose={() => setShowClockOff(false)}
+					onSubmit={async (answers) => {
+						await saveDailyReview({ data: answers });
+						setShowClockOff(false);
+					}}
+				/>
+			)}
 		</div>
 	);
 }
