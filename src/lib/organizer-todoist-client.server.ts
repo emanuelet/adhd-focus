@@ -1,6 +1,5 @@
 import { TodoistApi, type AddTaskArgs, type UpdateTaskArgs } from "@doist/todoist-sdk";
 
-const BASE = "https://api.todoist.com/api/v1";
 const DEFAULT_TIMEOUT_MS = 10_000;
 
 export interface OrganizerTodoistClientOptions {
@@ -17,7 +16,6 @@ export function createOrganizerTodoistClient(options: OrganizerTodoistClientOpti
 		const token = process.env.TODOIST_API_TOKEN;
 		if (!token) throw new Error("TODOIST_API_TOKEN not set");
 		api = new TodoistApi(token, {
-			baseUrl: BASE,
 			customFetch: async (url, options) => {
 				const controller = new AbortController();
 				const timeout = setTimeout(() => controller.abort(), timeoutMs);

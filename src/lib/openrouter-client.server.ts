@@ -36,7 +36,6 @@ export function createOpenRouterClient(options: OpenRouterClientOptions = {}) {
 							model: process.env.OPENROUTER_MODEL ?? "openai/gpt-5.6-luna",
 							messages,
 							stream: false,
-							temperature: 0,
 							responseFormat: { type: "json_object" },
 						},
 					},
