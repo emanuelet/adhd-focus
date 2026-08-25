@@ -13,3 +13,5 @@ __unconfig*
 .cta.json
 todos.json
 .worktrees/
+src-tauri/target/
+src-tauri/gen/

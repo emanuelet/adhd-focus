@@ -92,8 +92,9 @@ describe("PreFlightModal", () => {
 	it("calls onClose when backdrop is clicked", () => {
 		const onClose = vi.fn();
 		setup({ onClose });
-		const backdrops = screen.getByRole("presentation");
-		fireEvent.click(backdrops);
+		fireEvent.click(
+			screen.getByRole("button", { name: "Close pre-flight check" }),
+		);
 		expect(onClose).toHaveBeenCalledOnce();
 	});
 

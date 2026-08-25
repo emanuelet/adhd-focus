@@ -29,17 +29,23 @@ export function PreFlightModal({ onContinue, onSkip, onClose }: Props) {
 
 	return (
 		<>
-			<div
+			<button
+				type="button"
 				className="fixed inset-0 bg-black/50 z-50"
 				onClick={onClose}
-				role="presentation"
+				aria-label="Close pre-flight check"
 			/>
 			<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
 				<div
 					className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 w-full max-w-sm shadow-2xl"
-					onClick={(e) => e.stopPropagation()}
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="pre-flight-title"
 				>
-					<h2 className="text-base font-semibold text-[var(--text)] mb-1">
+					<h2
+						id="pre-flight-title"
+						className="text-base font-semibold text-[var(--text)] mb-1"
+					>
 						Pre-flight check
 					</h2>
 					<p className="text-sm text-[var(--muted)] mb-4">

@@ -2,12 +2,13 @@ import type { TodoistTaskUpdate } from "~/types/todoist";
 
 const BASE = "https://api.todoist.com/api/v1";
 
-function headers() {
+function headers(requestId?: string) {
 	const token = process.env.TODOIST_API_TOKEN;
 	if (!token) throw new Error("TODOIST_API_TOKEN not set");
 	return {
 		Authorization: `Bearer ${token}`,
 		"Content-Type": "application/json",
+		...(requestId ? { "X-Request-Id": requestId } : {}),
 	};
 }
 
@@ -31,18 +32,21 @@ async function getAll(url: string, init: RequestInit): Promise<unknown[]> {
 export const todoistClient = {
 	getTasks: () => getAll(`${BASE}/tasks`, { headers: headers() }),
 	getProjects: () => getAll(`${BASE}/projects`, { headers: headers() }),
-	closeTask: (id: string) =>
-		fetch(`${BASE}/tasks/${id}/close`, { method: "POST", headers: headers() }),
+	closeTask: (id: string, requestId?: string) =>
+		fetch(`${BASE}/tasks/${id}/close`, {
+			method: "POST",
+			headers: headers(requestId),
+		}),
 	updateTask: (id: string, updates: TodoistTaskUpdate) =>
 		fetch(`${BASE}/tasks/${id}`, {
 			method: "POST",
 			headers: headers(),
 			body: JSON.stringify(updates),
 		}),
-	createTask: (content: string) =>
+	createTask: (content: string, requestId?: string) =>
 		fetch(`${BASE}/tasks`, {
 			method: "POST",
-			headers: headers(),
+			headers: headers(requestId),
 			body: JSON.stringify({ content }),
 		}),
 };

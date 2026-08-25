@@ -77,8 +77,9 @@ describe("SprintPicker", () => {
 	it("calls onClose when backdrop is clicked", () => {
 		const onClose = vi.fn();
 		setup({ onClose });
-		const backdrops = screen.getAllByRole("presentation");
-		fireEvent.click(backdrops[0]);
+		fireEvent.click(
+			screen.getByRole("button", { name: "Close sprint picker" }),
+		);
 		expect(onClose).toHaveBeenCalledOnce();
 	});
 

@@ -6,7 +6,7 @@
 
 **Architecture:** PostgreSQL is the authority for local entities and a durable operation log. Todoist remains a single shared-token task provider; Karakeep is the canonical store for approved must-read URLs. Clients use optimistic UI backed by a local outbox, then reconcile through server-owned integrations. OpenRouter produces reviewable, schema-validated proposals only.
 
-**Tech stack:** TanStack Start, TypeScript, PostgreSQL, Zustand, Workbox, OpenRouter, Todoist REST API, Karakeep API, Tauri, Capacitor.
+**Tech stack:** TanStack Start, TypeScript, PostgreSQL, Zustand, OpenRouter, Todoist REST API, Karakeep API, Tauri, Capacitor.
 
 ---
 
@@ -113,13 +113,13 @@ Agents may research their dependencies but must not edit dependency-owned files 
 
 ### F. Capacitor mobile
 
-1. Add Capacitor config, Android/iOS shells, and a platform adapter.
+1. Add Capacitor config, Android shell, and a platform adapter. iOS is deferred.
 2. Add secure session storage and local SQLite operation outbox.
 3. Sync on launch, resume, reconnect, and manual refresh.
 4. Add scheduled local start-of-day, clock-off, and weekly review notifications.
-5. Test platform adapter boundaries; manually verify Android/iOS notification permission and offline replay.
+5. Test platform adapter boundaries; manually verify Android notification permission and offline replay.
 
-**Files:** `capacitor.config.ts`, `android/`, `ios/`, `src/platform/mobile.ts`, mobile adapter tests.
+**Files:** `capacitor.config.ts`, `android/`, `src/platform/mobile.ts`, mobile adapter tests.
 
 ### G. Integration QA and release
 
@@ -157,3 +157,6 @@ pnpm build
 - 2026-08-25: Recreating the lanes is blocked: OpenCode session resume returned server errors, and fresh runs exhausted the configured OpenRouter weekly key limit before any files were written. All four replacement worktrees remain clean.
 - 2026-08-25: Reconstruction completed with OpenCode `openai/gpt-5.6-luna`, not OpenRouter. Lane A sync: `pnpm typecheck` and 85 tests passed. Lane B Todoist reliability: typecheck and 84 tests passed. Lane C organizer/Karakeep: typecheck and 87 tests passed. Lane D daily workflow: typecheck, 84 tests, Biome, and diff checks passed.
 - 2026-08-25: All four lane PRs merged. GitHub resolved the migration registry as `002_sync.sql`, `003_organizer.sql`, and `004_review.sql`.
+- 2026-08-25: Workbox removal and all lanes A-D were merged. Combined validation passed: typecheck, 101 tests, and production build.
+- 2026-08-25: Added shared native SQLite outbox adapters plus Tauri and Capacitor shells using `com.magrathea.adhdfocus` and the HTTPS origin `https://adhdfocus.etonello.work`. PostgreSQL migration integration coverage is opt-in through `TEST_DATABASE_URL`.
+- 2026-08-25: Native mutations now use persisted idempotent commands, enqueue after native network failures, and replay on launch/reconnect. Command storage is migration `005_command_operations.sql`.

@@ -43,19 +43,15 @@ export function TaskSlot({
 
 	if (isEmpty) {
 		return (
-			<div
-				className="rounded-xl border border-dashed border-[var(--border)] p-4 flex items-center justify-center min-h-[80px] cursor-pointer hover:border-[var(--border-alt)] transition-colors"
+			<button
+				type="button"
+				className="w-full rounded-xl border border-dashed border-[var(--border)] p-4 flex items-center justify-center min-h-[80px] cursor-pointer hover:border-[var(--border-alt)] transition-colors bg-transparent"
 				onClick={onPromote}
-				role="button"
-				tabIndex={0}
-				onKeyDown={(e) => {
-					if (e.key === "Enter") onPromote?.();
-				}}
 			>
 				<span className="text-sm text-[var(--faint)]">
 					Slot {index + 1} — tap to fill
 				</span>
-			</div>
+			</button>
 		);
 	}
 

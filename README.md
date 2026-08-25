@@ -61,7 +61,36 @@ pnpm lint      # Lint with Biome
 pnpm format    # Format with Biome
 pnpm check     # Lint + format check
 pnpm typecheck # TypeScript type checking
+pnpm tauri:dev # Run the Linux desktop shell
+pnpm tauri:build:linux # Build deb and AppImage packages
+pnpm capacitor # Run Capacitor commands
 ```
+
+## Native shells
+
+Android and Tauri desktop shells load `https://adhdfocus.etonello.work`.
+They contain no API credentials and rely on the existing HTTPS session cookie. Native
+clients keep a local SQLite outbox for sync operations; retries for Todoist commands
+remain server-owned until those commands are added to the sync contract.
+
+```bash
+pnpm exec cap sync
+pnpm exec cap open android
+pnpm tauri:dev
+```
+
+Tauri Linux builds require Rust and the system WebKitGTK development packages.
+Run database integration tests only against a disposable PostgreSQL database:
+
+```bash
+TEST_DATABASE_URL=postgres://... pnpm test
+```
+
+### Cloudflare Tunnel
+
+Set `CLOUDFLARED_TUNNEL_TOKEN` in the Compose environment to expose the app
+through an existing Cloudflare Tunnel. The `cloudflared` sidecar waits for the
+app health check and does not contain tunnel credentials in the repository.
 
 ## Deployment
 
@@ -72,4 +101,4 @@ node dist/server/index.mjs
 
 ## Project Structure
 
-See [`plan/`](plan/) for implementation plans and product notes.
+See [`.plans/`](.plans/) for implementation plans and product notes.

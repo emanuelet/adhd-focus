@@ -38,7 +38,12 @@ export function PomodoroRing({
 						: "Break in progress"
 			}
 		>
-			<svg width={size} height={size} className="absolute inset-0 -rotate-90">
+			<svg
+				width={size}
+				height={size}
+				className="absolute inset-0 -rotate-90"
+				aria-hidden="true"
+			>
 				<circle
 					cx={size / 2}
 					cy={size / 2}

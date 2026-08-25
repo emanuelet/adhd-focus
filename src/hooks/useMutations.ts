@@ -1,16 +1,6 @@
 import { useCallback } from "react";
+import { executeCommand } from "~/lib/commands";
 import { uid } from "~/lib/utils";
-import {
-	createCapture,
-	deleteCapture as deleteCaptureFn,
-	markCaptureSent,
-} from "~/server/captures";
-import {
-	deleteEnergy as deleteEnergyFn,
-	setEnergy as setEnergyFn,
-} from "~/server/energy";
-import { updateDoneIds, updateTodayIds } from "~/server/state";
-import { closeTask, createTodoistTask } from "~/server/todoist";
 import { useAppStore } from "~/store/useAppStore";
 import type { EnergyLevel } from "~/types/todoist";
 
@@ -53,7 +43,7 @@ export function useMutations() {
 				"todayIds",
 				() => store.setTodayIds(next),
 				() => store.setTodayIds(todayIds),
-				() => updateTodayIds({ data: { todayIds: next } }),
+				() => executeCommand("state.today", { todayIds: next }),
 			);
 		},
 		[runOptimistic, store],
@@ -67,7 +57,7 @@ export function useMutations() {
 				"todayIds",
 				() => store.setTodayIds(next),
 				() => store.setTodayIds(previous),
-				() => updateTodayIds({ data: { todayIds: next } }),
+				() => executeCommand("state.today", { todayIds: next }),
 			);
 		},
 		[runOptimistic, store],
@@ -90,9 +80,9 @@ export function useMutations() {
 				},
 				() =>
 					Promise.all([
-						updateTodayIds({ data: { todayIds: nextToday } }),
-						updateDoneIds({ data: { doneIds: nextDone } }),
-						closeTask({ data: { taskId: id } }),
+						executeCommand("state.today", { todayIds: nextToday }),
+						executeCommand("state.done", { doneIds: nextDone }),
+						executeCommand("todoist.close", { taskId: id }),
 					]),
 			);
 		},
@@ -112,8 +102,8 @@ export function useMutations() {
 				},
 				() =>
 					level
-						? setEnergyFn({ data: { taskId, level } })
-						: deleteEnergyFn({ data: { taskId } }),
+						? executeCommand("energy.set", { taskId, level })
+						: executeCommand("energy.delete", { taskId }),
 			);
 		},
 		[runOptimistic, store],
@@ -133,10 +123,13 @@ export function useMutations() {
 				() => store.addCapture(cap),
 				() => store.removeCapture(cap.id),
 				async () => {
-					const result = await createCapture({
-						data: { ...cap, sendToTodoist },
+					const result = await executeCommand("capture.create", {
+						captureId: cap.id,
+						text: cap.text,
+						isUrl: cap.isUrl,
+						sendToTodoist,
 					});
-					if (result.todoistTaskId) {
+					if (typeof result.todoistTaskId === "string") {
 						store.updateCapture(cap.id, {
 							sentToTodoist: true,
 							todoistTaskId: result.todoistTaskId,
@@ -145,7 +138,7 @@ export function useMutations() {
 				},
 			);
 		},
-		[store],
+		[runOptimistic, store],
 	);
 
 	const sendCaptureToTodoist = useCallback(
@@ -160,15 +153,17 @@ export function useMutations() {
 				() => store.updateCapture(captureId, { sentToTodoist: true }),
 				() => store.updateCapture(captureId, cap),
 				async () => {
-					const { id: todoistTaskId } = await createTodoistTask({
-						data: { content },
+					const result = await executeCommand("capture.send", {
+						captureId,
+						content,
 					});
-					store.updateCapture(captureId, { todoistTaskId });
-					await markCaptureSent({ data: { id: captureId, todoistTaskId } });
+					if (typeof result.todoistTaskId === "string") {
+						store.updateCapture(captureId, { todoistTaskId: result.todoistTaskId });
+					}
 				},
 			);
 		},
-		[store],
+		[runOptimistic, store],
 	);
 
 	const removeCapture = useCallback(
@@ -181,7 +176,7 @@ export function useMutations() {
 				`capture:${id}`,
 				() => store.removeCapture(id),
 				() => store.restoreCapture(capture, index),
-				() => deleteCaptureFn({ data: { id } }),
+				() => executeCommand("capture.delete", { captureId: id }),
 			);
 		},
 		[runOptimistic, store],

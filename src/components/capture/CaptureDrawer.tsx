@@ -42,10 +42,11 @@ export function CaptureDrawer({ open, onClose }: Props) {
 
 	return (
 		<>
-			<div
+			<button
+				type="button"
 				className="fixed inset-0 bg-black/40 z-40"
 				onClick={onClose}
-				role="presentation"
+				aria-label="Close quick capture"
 			/>
 
 			<div className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--surface)] border-t border-[var(--border)] rounded-t-2xl p-4 pb-8 shadow-2xl">

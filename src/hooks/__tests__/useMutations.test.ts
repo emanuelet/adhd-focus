@@ -5,31 +5,10 @@ import { useAppStore } from "~/store/useAppStore";
 import { useMutations } from "../useMutations";
 
 const mocks = vi.hoisted(() => ({
-	updateTodayIds: vi.fn(),
-	updateDoneIds: vi.fn(),
-	closeTask: vi.fn(),
-	setEnergy: vi.fn(),
-	deleteEnergy: vi.fn(),
-	createCapture: vi.fn(),
-	deleteCapture: vi.fn(),
+	executeCommand: vi.fn(),
 }));
 
-vi.mock("~/server/state", () => ({
-	updateTodayIds: mocks.updateTodayIds,
-	updateDoneIds: mocks.updateDoneIds,
-}));
-vi.mock("~/server/todoist", () => ({
-	closeTask: mocks.closeTask,
-	createTodoistTask: vi.fn(),
-}));
-vi.mock("~/server/energy", () => ({
-	setEnergy: mocks.setEnergy,
-	deleteEnergy: mocks.deleteEnergy,
-}));
-vi.mock("~/server/captures", () => ({
-	createCapture: mocks.createCapture,
-	deleteCapture: mocks.deleteCapture,
-}));
+vi.mock("~/lib/commands", () => ({ executeCommand: mocks.executeCommand }));
 
 describe("useMutations", () => {
 	beforeEach(() => {
@@ -45,7 +24,7 @@ describe("useMutations", () => {
 
 	it("rolls back an optimistic promote and exposes the failure", async () => {
 		useAppStore.setState({ todayIds: ["existing"] });
-		mocks.updateTodayIds.mockRejectedValueOnce(new Error("offline"));
+		mocks.executeCommand.mockRejectedValueOnce(new Error("offline"));
 		const { result } = renderHook(() => useMutations());
 
 		await expect(act(() => result.current.promote("new-task"))).rejects.toThrow(
@@ -61,7 +40,7 @@ describe("useMutations", () => {
 
 	it("exposes pending state while a mutation is in flight", async () => {
 		let resolveRequest!: () => void;
-		mocks.updateTodayIds.mockImplementationOnce(
+		mocks.executeCommand.mockImplementationOnce(
 			() => new Promise<void>((resolve) => (resolveRequest = resolve)),
 		);
 		const { result } = renderHook(() => useMutations());
@@ -76,7 +55,7 @@ describe("useMutations", () => {
 	});
 
 	it("clears pending state after a successful energy sync", async () => {
-		mocks.setEnergy.mockResolvedValueOnce(undefined);
+		mocks.executeCommand.mockResolvedValueOnce({});
 		const { result } = renderHook(() => useMutations());
 
 		await act(() => result.current.tagEnergy("task-1", "high"));
@@ -94,7 +73,7 @@ describe("useMutations", () => {
 			sentToTodoist: false,
 		};
 		useAppStore.setState({ captures: [capture] });
-		mocks.deleteCapture.mockRejectedValueOnce(new Error("db unavailable"));
+		mocks.executeCommand.mockRejectedValueOnce(new Error("db unavailable"));
 		const { result } = renderHook(() => useMutations());
 
 		await expect(

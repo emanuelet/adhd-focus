@@ -1,5 +1,5 @@
 # ADHD Focus — Plan Patch: pnpm + Vite 8
-> **Historical:** Workbox and its service-worker build path were removed on 2026-08-24. Use `.hermes/plans/2026-08-24-adhd-focus-refactor.md` for active work.
+> **Historical:** Workbox and its service-worker build path were removed on 2026-08-24. Use `.plans/adhd-focus-refactor.md` for active work.
 > Apply on top of `adhd-focus-plan.md`. Where this conflicts, this takes precedence.
 
 ---

@@ -15,3 +15,13 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    depends_on:
+      adhd-focus:
+        condition: service_healthy
+    command: tunnel --no-autoupdate run --token $${CLOUDFLARED_TUNNEL_TOKEN}
+    environment:
+      CLOUDFLARED_TUNNEL_TOKEN: ${CLOUDFLARED_TUNNEL_TOKEN:-}

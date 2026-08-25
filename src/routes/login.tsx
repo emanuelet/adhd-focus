@@ -23,8 +23,8 @@ function LoginPage() {
 		try {
 			await login({ data: { password } });
 			router.history.push(search.redirect || "/");
-		} catch (err: any) {
-			setError(err?.message || "Login failed");
+		} catch (error) {
+			setError(error instanceof Error ? error.message : "Login failed");
 		} finally {
 			setLoading(false);
 		}
@@ -57,7 +57,6 @@ function LoginPage() {
 					placeholder="Password"
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
-					autoFocus
 					style={{
 						padding: "0.75rem",
 						borderRadius: 8,

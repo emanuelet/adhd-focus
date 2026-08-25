@@ -1,0 +1,10 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Allow the remote ADHD Focus app to use its local outbox.",
+  "windows": ["main"],
+  "permissions": ["core:default", "sql:default"],
+  "remote": {
+    "urls": ["https://adhdfocus.etonello.work/*"]
+  }
+}

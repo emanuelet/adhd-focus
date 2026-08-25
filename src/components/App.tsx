@@ -9,6 +9,8 @@ import { FocusBanner } from "~/components/layout/FocusBanner";
 import { Nav } from "~/components/layout/Nav";
 import { TodayView } from "~/components/today/TodayView";
 import { useMutations } from "~/hooks/useMutations";
+
+import { useOutboxSync } from "~/hooks/useOutboxSync";
 import { usePomodoro } from "~/hooks/usePomodoro";
 import { recordSprintCompletion } from "~/server/state";
 import { useAppStore } from "~/store/useAppStore";
@@ -27,6 +29,7 @@ interface Props {
 type Tab = "today" | "inbox" | "done";
 
 export default function App({ tasks, projectMap }: Props) {
+	useOutboxSync();
 	const [tab, setTab] = useState<Tab>("today");
 	const [captureOpen, setCaptureOpen] = useState(false);
 	const [showPreflight, setShowPreflight] = useState(false);
