@@ -25,7 +25,7 @@
 | DB client | `postgres` |
 | Auth | Single-user JWT (`jose`) |
 | Organizer SDKs | `@openrouter/sdk`, `@doist/todoist-sdk`, `@karakeep/sdk` |
-| PWA | `workbox-build` post-build |
+| Clients | Web app today; Tauri and Capacitor planned |
 | Deploy | Docker |
 
 ## Getting Started
