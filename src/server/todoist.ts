@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { todoistClient } from "~/lib/todoist-client";
-import type { Project, Task } from "~/types/todoist";
+import type { Project, Task, TodoistTaskUpdate } from "~/types/todoist";
 import { requireAuth } from "./auth-guard.server";
 
 export const getTasks = createServerFn({ method: "GET" }).handler(
@@ -23,6 +23,15 @@ export const closeTask = createServerFn({ method: "POST" })
 		await requireAuth();
 		const res = await todoistClient.closeTask(data.taskId);
 		if (!res.ok) throw new Error(`Close task failed: ${res.status}`);
+	});
+
+export const updateTask = createServerFn({ method: "POST" })
+	.validator((d: unknown) => d as { taskId: string; updates: TodoistTaskUpdate })
+	.handler(async ({ data }) => {
+		await requireAuth();
+		const res = await todoistClient.updateTask(data.taskId, data.updates);
+		if (!res.ok) throw new Error(`Update task failed: ${res.status}`);
+		return res.json();
 	});
 
 export const createTodoistTask = createServerFn({ method: "POST" })
