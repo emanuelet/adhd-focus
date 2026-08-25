@@ -22,6 +22,17 @@ export interface Task {
 	url: string;
 }
 
+export interface TodoistTaskUpdate {
+	content?: string;
+	description?: string;
+	project_id?: string;
+	section_id?: string | null;
+	parent_id?: string | null;
+	priority?: Task["priority"];
+	labels?: string[];
+	due_string?: string | null;
+}
+
 export interface Project {
 	id: string;
 	name: string;
@@ -54,6 +65,11 @@ export interface AppState {
 	doneIds: string[];
 	energyMap: Record<string, EnergyLevel>;
 	captures: Capture[];
+}
+
+export interface SyncState {
+	status: "pending" | "failed";
+	error?: string;
 }
 
 export type SprintLength = 25 | 52 | 90 | 120;

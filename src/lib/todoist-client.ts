@@ -1,3 +1,5 @@
+import type { TodoistTaskUpdate } from "~/types/todoist";
+
 const BASE = "https://api.todoist.com/api/v1";
 
 function headers() {
@@ -31,6 +33,12 @@ export const todoistClient = {
 	getProjects: () => getAll(`${BASE}/projects`, { headers: headers() }),
 	closeTask: (id: string) =>
 		fetch(`${BASE}/tasks/${id}/close`, { method: "POST", headers: headers() }),
+	updateTask: (id: string, updates: TodoistTaskUpdate) =>
+		fetch(`${BASE}/tasks/${id}`, {
+			method: "POST",
+			headers: headers(),
+			body: JSON.stringify(updates),
+		}),
 	createTask: (content: string) =>
 		fetch(`${BASE}/tasks`, {
 			method: "POST",
