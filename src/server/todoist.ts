@@ -38,9 +38,9 @@ export const updateTask = createServerFn({ method: "POST" })
 
 export const createTodoistTask = createServerFn({ method: "POST" })
 	.validator((d: unknown) => d as { content: string })
-	.handler(async ({ data }): Promise<{ id: string }> => {
+	.handler(async ({ data }): Promise<Task> => {
 		await requireAuth();
 		const res = await todoistClient.createTask(data.content);
 		if (!res.ok) throw new Error(`Create task failed: ${res.status}`);
-		return res.json();
+		return res.json() as Promise<Task>;
 	});

@@ -37,7 +37,7 @@ export function useMutations() {
 	const promote = useCallback(
 		async (id: string) => {
 			const { todayIds } = useAppStore.getState();
-			if (todayIds.length >= 3 || todayIds.includes(id)) return;
+			if (todayIds.length >= 5 || todayIds.includes(id)) return;
 			const next = [...todayIds, id];
 			await runOptimistic(
 				"todayIds",

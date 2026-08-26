@@ -62,10 +62,10 @@ export function validateFocusSlots(data: JsonObject): string | undefined {
 	const slots = data.slots;
 	if (
 		!Array.isArray(slots) ||
-		slots.length > 3 ||
+		slots.length > 5 ||
 		!slots.every((slot) => typeof slot === "string")
 	) {
-		return "focus_slots.data.slots must contain at most three task IDs";
+		return "focus_slots.data.slots must contain at most five task IDs";
 	}
 	if (new Set(slots).size !== slots.length) {
 		return "a task cannot occupy more than one focus slot";

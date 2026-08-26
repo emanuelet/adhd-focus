@@ -38,7 +38,7 @@ async function applyCommand(command: CommandInput): Promise<CommandResult> {
 	switch (command.kind) {
 		case "state.today":
 			if (!Array.isArray(payload.todayIds) || !payload.todayIds.every((id) => typeof id === "string")) throw new TypeError("todayIds must be strings");
-			if (payload.todayIds.length > 3) throw new TypeError("todayIds can contain at most three tasks");
+			if (payload.todayIds.length > 5) throw new TypeError("todayIds can contain at most five tasks");
 			await db`INSERT INTO daily_state (date, today_ids) VALUES (${today()}, ${payload.todayIds as string[]}) ON CONFLICT (date) DO UPDATE SET today_ids = EXCLUDED.today_ids, updated_at = NOW()`;
 			return {};
 		case "state.done":

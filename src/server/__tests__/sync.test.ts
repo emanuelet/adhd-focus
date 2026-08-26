@@ -28,9 +28,9 @@ describe("sync validation", () => {
 		);
 	});
 
-	it("rejects more than three focus slots", () => {
-		expect(validateFocusSlots({ slots: ["1", "2", "3", "4"] })).toContain(
-			"at most three",
+	it("rejects more than five focus slots", () => {
+		expect(validateFocusSlots({ slots: ["1", "2", "3", "4", "5", "6"] })).toContain(
+			"at most five",
 		);
 	});
 

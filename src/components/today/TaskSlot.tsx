@@ -20,6 +20,7 @@ interface Props {
 	onEnergyClear?: () => void;
 	onStartFocus?: () => void;
 	onStopFocus?: () => void;
+	label?: string;
 }
 
 export function TaskSlot({
@@ -38,6 +39,7 @@ export function TaskSlot({
 	onEnergyClear,
 	onStartFocus,
 	onStopFocus,
+	label,
 }: Props) {
 	const isEmpty = !task;
 
@@ -49,7 +51,7 @@ export function TaskSlot({
 				onClick={onPromote}
 			>
 				<span className="text-sm text-[var(--faint)]">
-					Slot {index + 1} — tap to fill
+					{label ?? `Slot ${index + 1}`} — tap to fill
 				</span>
 			</button>
 		);
