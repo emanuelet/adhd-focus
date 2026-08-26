@@ -1,19 +1,52 @@
 import { createServerFn } from "@tanstack/react-start";
+import { db } from "~/lib/db";
 import { todoistClient } from "~/lib/todoist-client";
 import type { Project, Task, TodoistTaskUpdate } from "~/types/todoist";
 import { requireAuth } from "./auth-guard.server";
 
+let cacheReady: Promise<void> | undefined;
+
+function ensureCache() {
+	cacheReady ??= db`
+		CREATE TABLE IF NOT EXISTS todoist_cache (
+			cache_key TEXT PRIMARY KEY,
+			data JSONB NOT NULL,
+			updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+		)
+	`.then(() => undefined);
+	return cacheReady;
+}
+
+async function cached<T>(key: string, load: () => Promise<T>): Promise<T> {
+	await ensureCache();
+	try {
+		const data = await load();
+		await db`
+			INSERT INTO todoist_cache (cache_key, data)
+			VALUES (${key}, ${JSON.stringify(data)}::jsonb)
+			ON CONFLICT (cache_key) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()
+		`;
+		return data;
+	} catch (error) {
+		const rows = await db<{ data: T }[]>`
+			SELECT data FROM todoist_cache WHERE cache_key = ${key}
+		`;
+		if (rows[0]) return rows[0].data;
+		throw error;
+	}
+}
+
 export const getTasks = createServerFn({ method: "GET" }).handler(
 	async (): Promise<Task[]> => {
 		await requireAuth();
-		return todoistClient.getTasks() as Promise<Task[]>;
+		return cached("tasks", () => todoistClient.getTasks() as Promise<Task[]>);
 	},
 );
 
 export const getProjects = createServerFn({ method: "GET" }).handler(
 	async (): Promise<Project[]> => {
 		await requireAuth();
-		return todoistClient.getProjects() as Promise<Project[]>;
+		return cached("projects", () => todoistClient.getProjects() as Promise<Project[]>);
 	},
 );
 

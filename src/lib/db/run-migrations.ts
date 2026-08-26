@@ -34,6 +34,7 @@ export async function runMigrations() {
 		"003_organizer.sql",
 		"004_review.sql",
 		"005_command_operations.sql",
+		"006_todoist_cache.sql",
 	];
 	let count = 0;
 	for (const file of migrations) {

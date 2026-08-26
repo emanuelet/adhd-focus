@@ -12,6 +12,7 @@ const migrations = [
 	"003_organizer.sql",
 	"004_review.sql",
 	"005_command_operations.sql",
+	"006_todoist_cache.sql",
 ];
 
 describeDatabase("PostgreSQL migrations", () => {
@@ -55,6 +56,7 @@ describeDatabase("PostgreSQL migrations", () => {
 				"organizer_items",
 				"review_settings",
 				"command_operations",
+				"todoist_cache",
 			]),
 		);
 	});
