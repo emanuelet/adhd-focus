@@ -1,6 +1,6 @@
 [package]
 name = "adhd-focus"
-version = "0.1.0"
+version = "0.2.0"
 description = "ADHD Focus desktop shell"
 edition = "2021"
 
